@@ -21,27 +21,43 @@ function App() {
     getUsuarios();
   }, []);
 
-  const getUsuarios = () => {
-    axios
-      .get(
-        "https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users",
-        {
-          headers: {
-            Authorization: "ana-sammi-barbosa",
-          },
-        }
-      )
-      .then((res) => {
-        setUsuarios(res.data);
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
-  };
+  const getUsuarios = async () => {
+    try {
+      const resposta = await axios.get("https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users", { headers: { Authorization: "ana-sammi-barbosa" } })
+      setUsuarios(resposta.data);
+    } catch (error) {
+      console.log(error, "erro de getUsuario");
+    }
+  }
+  // const getUsuarios = () => {
+  //   axios
+  //     .get(
+  //       "https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users",
+  //       {
+  //         headers: {
+  //           Authorization: "ana-sammi-barbosa",
+  //         },
+  //       }
+  //     )
+  //     .then((res) => {
+  //       setUsuarios(res.data);
+  //       console.log(res.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response);
+  //     });
+  // };
 
-  const pesquisaUsuario = (pesquisa) => {
-   
-  };
+  const pesquisaUsuario = async (pesquisa) => {
+    try {
+      const resposta = await axios.get(`https://us-central1-labenu-apis.cloudfunctions.net/labenusers/users/search?name=${pesquisa.nome}&email=${pesquisa.email}`,{ headers: { Authorization: "ana-sammi-barbosa" }})
+      setUsuarios(resposta.data);
+      setPageFlow(3);
+    } catch (error) {
+      console.log(error, "erro de getUsuario");
+    }
+  }
+
 
   const onChangeName = (e) => {
     setNome(e.target.value);
@@ -57,10 +73,10 @@ function App() {
       email,
     };
     setPesquisa(novaPesquisa);
-   
+
     setNome("")
     setEmail("")
-    
+    pesquisaUsuario(pesquisa)
   };
 
   const onClickVoltar = () => {
@@ -102,7 +118,7 @@ function App() {
                   Cadastrar
                 </ButtonCadastro>
               )}
-              
+
             </ContainerBarra>
             {usuarios.map((usuario) => {
               return (
@@ -117,7 +133,7 @@ function App() {
             })}
           </>
         )}
-        
+
       </ContainerPrincipal>
     </div>
   );
